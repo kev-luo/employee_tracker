@@ -1,10 +1,11 @@
 const inquirer = require('inquirer');
-const Table = require('cli-table');
+const Table = require('cli-table-redemption');
 const mysql = require('mysql');
-const initialQuestions = require('./inquirerQuestions/whatNext');
+const initialQuestions = require('./inquirerQuestions/initialQuestions');
 const {Employee,Role,Department} = require('./inquirerQuestions/tableClasses');
 const create = require('./inquirerQuestions/create');
 const addMySql = require('./sqlQueries/addMySql');
+const viewMySql = require('./sqlQueries/viewMySql');
 
 // const db = mysql.createConnection({
 //   host: 'localhost',
@@ -39,6 +40,19 @@ async function begin() {
 };
 
 async function viewThis(manipulateDbParam) {
+  switch(manipulateDbParam) {
+    case 'All employees':
+      await viewMySql.viewAllEmployees();
+      console.log('end');
+      break;
+    case 'All roles':
+      await viewMySql.viewAllRoles();
+      console.log('end');
+      break;
+    case 'All departments':
+      await viewMySql.viewAllDepartments();
+      break;
+  }
   return manipulateDbParam
 };
 
