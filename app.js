@@ -57,13 +57,13 @@ async function addThis(manipulateDbParam) {
       newEntryInfo = await create.addRole();
       newEntryObject = new Role(newEntryInfo.title, parseInt(newEntryInfo.salary), parseInt(newEntryInfo.deptId))
       await addMySql.addRoleQuery(newEntryObject);
-      console.log('New employee added');
+      console.log('New role added');
       break;
     case 'New department':
       newEntryInfo = await create.addDept();
-      newEntryObject = new Department(newEntryInfo.firstName, newEntryInfo.lastName, parseInt(newEntryInfo.roleId))
+      newEntryObject = new Department(newEntryInfo.name)
       await addMySql.addDeptQuery(newEntryObject);
-      console.log('New employee added');
+      console.log('New department added');
       break;
   }
 };

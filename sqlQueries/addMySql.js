@@ -21,12 +21,24 @@ function addEmpQuery(employee) {
   })
 }
 
-function addRoleQuery() {
-
+function addRoleQuery(role) {
+  const queryString = `INSERT INTO role SET ?`;
+  
+  db.query(queryString,role,(err,res) => {
+    if (err) throw err;
+    console.log(res);
+    db.end();
+  })
 }
 
-function addDeptQuery() {
-
+function addDeptQuery(department) {
+  const queryString = `INSERT INTO department SET ?`;
+  
+  db.query(queryString,department,(err,res) => {
+    if (err) throw err;
+    console.log(res);
+    db.end();
+  })
 }
 
 module.exports = {addEmpQuery, addRoleQuery, addDeptQuery}
