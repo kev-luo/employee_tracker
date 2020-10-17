@@ -1,5 +1,4 @@
-const inquirer = require("inquirer")
-
+const inquirer = require('inquirer');
 function whatNext() {
   let question = {
     type: 'list',
@@ -7,22 +6,7 @@ function whatNext() {
     message: 'What would you like to do next?',
     choices: ['View','Add','Update','Remove','Exit']
   }
-  inquirer
-    .prompt(question)
-    .then(answer => {
-      switch (answer.choice) {
-        case 'View':
-          return viewDb();
-        case 'Add':
-          return addToDb();
-        case 'Update':
-          return updateDb();
-        case 'Remove':
-          console.log('coming soon');
-        default:
-          console.log('Lates');
-      }
-  })
+  return inquirer.prompt(question);
 }
 
 function viewDb() {
@@ -32,20 +16,11 @@ function viewDb() {
     message: 'What would you like to view?',
     choices: ['All employees','All roles','All departments','Go Back']
   }
-  inquirer
-  .prompt(question)
-  .then(answer => {
-    switch (answer.view) {
-      case 'All employees':
-        break;
-      case 'All roles':
-        break;
-      case 'All departments':
-        break;
-      default:
-        whatNext();
-    }
-  })
+  return inquirer
+    .prompt(question)
+    .then(answer => {
+      return answer.view;
+    })
 }
 
 function addToDb() {
@@ -55,21 +30,11 @@ function addToDb() {
     message: 'What would you like to add?',
     choices: ['New employee','New role','New department','Go Back']
   }
-  inquirer
-  .prompt(question)
-  .then(answer => {
-    switch (answer.add) {
-      case 'New employee':
-        break;
-      case 'New role':
-        break;
-      case 'New department':
-        break;
-      default:
-        whatNext();
-    }
-    return answer.add;
-  })
+  return inquirer
+    .prompt(question)
+    .then(answer => {
+      return answer.add;
+    })
 }
 
 function updateDb() {
@@ -79,16 +44,11 @@ function updateDb() {
     message: 'What would you like to update?',
     choices: ['Employee role','Go Back']
   }
-  inquirer
-  .prompt(question)
-  .then(answer => {
-    switch (answer.update) {
-      case 'Employee role':
-        break;
-      default:
-        whatNext();
-    }
-  })
+  return inquirer
+    .prompt(question)
+    .then(answer => {
+      return answer.update;
+    })
 }
 
 module.exports = {whatNext, viewDb, addToDb, updateDb};
