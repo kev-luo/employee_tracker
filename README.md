@@ -4,17 +4,18 @@
 
 ## Description
 content management system (cms) allowing companies to keep track of their employees
-pseudocoding:
-- create databases and tables
+
+**pseudocoding:**
+- ~~create databases and tables~~
 - use inquirer to allow user to add departments, roles, and employees
-- use inquirer to allow user to view departments, rolles, and employees
+- use inquirer to allow user to view departments, roles, and employees
 - use inquirer to allow user to update employee roles
 - allow updating employee managers
 - allow viewing employees by manager
 - allow deleting departments, roles, and employees
 - allow viewing of total utilized budget of a department (combined salaries of all employees in that department)
 
-look into:
+**look into:**
 - separate files for containing functions for performing specific sql queries i plan to use
 - constructor function/class for organizing sql queries
 - seed.sql file to pre-populate database
