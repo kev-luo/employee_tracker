@@ -1,1 +1,0 @@
-const initialQuestions = require('./whatNext');

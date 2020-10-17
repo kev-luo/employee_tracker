@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+
 function whatNext() {
   let question = {
     type: 'list',
