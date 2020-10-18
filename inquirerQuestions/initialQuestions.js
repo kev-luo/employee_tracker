@@ -15,7 +15,7 @@ function viewDb() {
     type: 'list',
     name: 'view',
     message: 'What would you like to view?',
-    choices: ['All employees','All roles','All departments','Go Back']
+    choices: ['All employees','All roles','All departments','All employees by department', 'All employees by manager','Go Back']
   }
   return inquirer
     .prompt(question)
@@ -43,7 +43,7 @@ function updateDb() {
     type: 'list',
     name: 'update',
     message: 'What would you like to update?',
-    choices: ['Employee role','Go Back']
+    choices: ['Employee role', 'Employee manager', 'Go Back']
   }
   return inquirer
     .prompt(question)
@@ -59,6 +59,6 @@ module.exports = {whatNext, viewDb, addToDb, updateDb};
 //     type: 'list',
 //     name: 'delete',
 //     message: 'What would you like to delete?',
-//     choices: []
+//     choices: ['Employee', 'Role']
 //   }
 // }

@@ -18,7 +18,7 @@ function viewAllEmployees() {
   });
   let queryString = `SELECT * FROM employee`;
 
-  db.query(queryString,(err,res) => {
+  db.query(queryString, (err,res) => {
     if (err) throw err;
     let arrayData = res.map(employee => {
       return [employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id]
@@ -28,8 +28,8 @@ function viewAllEmployees() {
       table.push(i);
     }
 
-    console.log(table.toString());
     db.end();
+    console.log(table.toString());
   });
 };
 
@@ -75,4 +75,12 @@ function viewAllDepartments() {
   });
 }
 
-module.exports = {viewAllEmployees, viewAllRoles, viewAllDepartments}
+function viewEmpByDept() {
+
+}
+
+function viewEmpByMgr() {
+
+}
+
+module.exports = {viewAllEmployees, viewAllRoles, viewAllDepartments, viewEmpByDept, viewEmpByMgr}

@@ -7,25 +7,29 @@ content management system (cms) allowing companies to keep track of their employ
 
 **pseudocoding:**
 - ~~create databases and tables~~
-- use inquirer to allow user to add departments, roles, and employees
-- use inquirer to allow user to view departments, roles, and employees
+- ~~use inquirer to allow user to add departments, roles, and employees~~
+- ~~use inquirer to allow user to view departments, roles, and employees~~
 - use inquirer to allow user to update employee roles
 - allow updating employee managers
 - allow viewing employees by manager
 - allow deleting departments, roles, and employees
 - allow viewing of total utilized budget of a department (combined salaries of all employees in that department)
+- fix transitions between different types of queries
+- when asking about new employee, make theh role question a list of choices based on what's shown in the employee table
 
 **look into:**
 - separate files for containing functions for performing specific sql queries i plan to use
 - constructor function/class for organizing sql queries
 - seed.sql file to pre-populate database
 - adding validation to ensure user enters numbers when appropriate
+- self referential tables?
 
 **issues run into**
 - connecting modules and having them all work together in one file
 - async/await with inquirer 
 - query mySQL using variable containing table name as a string (eg INSERT INTO ? SET ?). first question mark is where i want to put the table name variable however it's not working since the variable contains a string. 
   -  error: "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''employee'' at line 1"
+-  cli-table doesn't end the inquirer if i don't explicitly call another inquirer function
 
 
 ## Table of Contents

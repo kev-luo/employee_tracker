@@ -4,8 +4,10 @@ const mysql = require('mysql');
 const initialQuestions = require('./inquirerQuestions/initialQuestions');
 const {Employee,Role,Department} = require('./inquirerQuestions/tableClasses');
 const create = require('./inquirerQuestions/create');
+const update = require('./inquirerQuestions/update');
 const addMySql = require('./sqlQueries/addMySql');
 const viewMySql = require('./sqlQueries/viewMySql');
+const updateMySql = require('./sqlQueries/updateMySql');
 
 // const db = mysql.createConnection({
 //   host: 'localhost',
@@ -43,11 +45,9 @@ async function viewThis(manipulateDbParam) {
   switch(manipulateDbParam) {
     case 'All employees':
       await viewMySql.viewAllEmployees();
-      console.log('end');
       break;
     case 'All roles':
       await viewMySql.viewAllRoles();
-      console.log('end');
       break;
     case 'All departments':
       await viewMySql.viewAllDepartments();
@@ -62,28 +62,44 @@ async function addThis(manipulateDbParam) {
 
   switch (manipulateDbParam) {
     case 'New employee':
-      newEntryInfo = await create.addEmployee();
-      newEntryObject = new Employee(newEntryInfo.firstName, newEntryInfo.lastName, parseInt(newEntryInfo.roleId, parseInt(newEntryInfo.managerId)))
-      await addMySql.addEmpQuery(newEntryObject);
+      newEntryInfo = await create.addEmployee(); // details needed to create new class instance
+      newEntryObject = new Employee(newEntryInfo.firstName, newEntryInfo.lastName, parseInt(newEntryInfo.roleId, parseInt(newEntryInfo.managerId))) // create new class instance
+      await addMySql.addEmpQuery(newEntryObject); // call fxn to add data to mySQL
       console.log('New employee added');
       break;
     case 'New role':
-      newEntryInfo = await create.addRole();
-      newEntryObject = new Role(newEntryInfo.title, parseInt(newEntryInfo.salary), parseInt(newEntryInfo.deptId))
-      await addMySql.addRoleQuery(newEntryObject);
+      newEntryInfo = await create.addRole(); // details needed to create new class instance
+      newEntryObject = new Role(newEntryInfo.title, parseInt(newEntryInfo.salary), parseInt(newEntryInfo.deptId)) // create new class instance
+      await addMySql.addRoleQuery(newEntryObject); // call fxn to add data to mySQL
       console.log('New role added');
       break;
     case 'New department':
-      newEntryInfo = await create.addDept();
-      newEntryObject = new Department(newEntryInfo.name)
-      await addMySql.addDeptQuery(newEntryObject);
+      newEntryInfo = await create.addDept(); // details needed to create new class instance
+      newEntryObject = new Department(newEntryInfo.name) // create new class instance
+      await addMySql.addDeptQuery(newEntryObject); // call fxn to add data to mySQL
       console.log('New department added');
       break;
   }
 };
 
 async function updateThis(manipulateDbParam) {
-  return manipulateDbParam
+  await viewMySql.viewAllEmployees();
+  
+  let empInfo;
+
+  setTimeout( async () => {
+    switch (manipulateDbParam) {
+      case 'Employee role':
+        empInfo = await update.empRoleQs();
+        await updateMySql.updateEmpRole(empInfo);
+        break;
+      case 'Employee manager':
+        empInfo = update.empRoleQs();
+        await updateMySql.updateEmpMgr(empInfo);
+        break;
+    }
+  },1000)
+  
 };
 
 
