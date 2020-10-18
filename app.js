@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const Table = require('cli-table-redemption');
+const cTable = require('console.table');
 const mysql = require('mysql');
 const initialQuestions = require('./inquirerQuestions/initialQuestions');
 const {Employee,Role,Department} = require('./inquirerQuestions/tableClasses');
@@ -21,40 +21,96 @@ const updateMySql = require('./sqlQueries/updateMySql');
 //   console.log(res);
 // })
 
-// switch case here based on initial question response
-async function begin() {
-  let initialAnswer = await initialQuestions.whatNext();
-  let manipulateDbParam;
-  switch (initialAnswer.choice) {
-    case 'View':
-      manipulateDbParam = await initialQuestions.viewDb();
-      viewThis(manipulateDbParam); // arg is what the user specifically wants to view
-      break;
-    case 'Add':
-      manipulateDbParam = await initialQuestions.addToDb();
-      addThis(manipulateDbParam); // arg is what the user specifically wants to add
-      break;
-    case 'Update':
-      manipulateDbParam = await initialQuestions.updateDb();
-      updateThis(manipulateDbParam); // arg is what the user specifically wants to update
-      break;
-  }
-};
 
-async function viewThis(manipulateDbParam) {
-  switch(manipulateDbParam) {
-    case 'All employees':
-      await viewMySql.viewAllEmployees();
-      break;
-    case 'All roles':
-      await viewMySql.viewAllRoles();
-      break;
-    case 'All departments':
-      await viewMySql.viewAllDepartments();
-      break;
+
+let crudQuestions = [
+  {
+    View: {
+
+    },
+    Add: {
+      type: 'list',
+      name: 'crud',
+      message: 'What would you like to add?',
+      choices: ['New employee','New role','New department','Go Back']
+    },
+    Update: {
+      type: 'list',
+      name: 'crud',
+      message: 'What would you like to update?',
+      choices: ['Employee role', 'Employee manager', 'Go Back']
+    },
+    Remove: {
+      type: 'list',
+      name: 'crud',
+      message: 'What would you like to delete?',
+      choices: ['Employee', 'Role']
+    }
   }
-  return manipulateDbParam
-};
+]
+
+function main() {
+  const question = {
+    type: 'list',
+    name: 'choice',
+    message: 'What would you like to do?',
+    choices: ['View','Add','Update','Remove','Exit']
+  }
+
+  inquirer.prompt(question).then( ({choice}) => {
+    switch (choice) {
+      case 'View':
+        return viewOptions();
+      case 'Add':
+        return addOptions();
+      case 'Update':
+        return updateOptions();
+      case 'Remove':
+        return removeOptions();
+      case 'Exit':
+        console.log('bye');
+        process.exit();
+    }
+  })
+}
+
+function viewOptions(op) {
+  let question = {
+    type: 'list',
+    name: 'view',
+    message: 'What would you like to view?',
+    choices: ['All employees','All roles','All departments','All employees by department', 'All employees by manager','Go Back']
+  }
+
+  inquirer.prompt(question).then(async ({view}) => {
+    let tableHead;
+    let queryData;
+
+    switch(view) {
+      case 'All employees':
+        queryData = await viewMySql.viewAllEmployees();
+        tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
+        break;
+      case 'All roles':
+        queryData = await viewMySql.viewAllRoles();
+        tableHead = ['ID','Title','Salary','Department ID']
+        break;
+      case 'All departments':
+        queryData = await viewMySql.viewAllDepartments();
+        tableHead = ['ID','Dept Name']
+        break;
+      case 'All employees by department':
+        break;
+      case 'All employees by manager':
+        break;
+      case 'Go Back':
+        break;
+    }
+
+    console.table(tableHead,queryData);
+    main();
+  })
+}
 
 async function addThis(manipulateDbParam) {
   let newEntryInfo;
@@ -94,7 +150,7 @@ async function updateThis(manipulateDbParam) {
         await updateMySql.updateEmpRole(empInfo);
         break;
       case 'Employee manager':
-        empInfo = update.empRoleQs();
+        empInfo = await update.empMgrQs();
         await updateMySql.updateEmpMgr(empInfo);
         break;
     }
@@ -103,6 +159,6 @@ async function updateThis(manipulateDbParam) {
 };
 
 
-begin();
+main();
 // call table classes with add/delete/read/update inquirer response
 // make mysql query using newly created object

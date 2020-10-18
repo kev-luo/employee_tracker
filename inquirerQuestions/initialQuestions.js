@@ -1,13 +1,14 @@
 const inquirer = require('inquirer');
 
 function whatNext() {
-  let question = {
-    type: 'list',
-    name: 'choice',
-    message: 'What would you like to do next?',
-    choices: ['View','Add','Update','Remove','Exit']
-  }
-  return inquirer.prompt(question);
+    let question = {
+      type: 'list',
+      name: 'choice',
+      message: 'What would you like to do?',
+      choices: ['View','Add','Update','Remove','Exit']
+    }
+    
+    return inquirer.prompt(question)
 }
 
 function viewDb() {
@@ -17,11 +18,7 @@ function viewDb() {
     message: 'What would you like to view?',
     choices: ['All employees','All roles','All departments','All employees by department', 'All employees by manager','Go Back']
   }
-  return inquirer
-    .prompt(question)
-    .then(answer => {
-      return answer.view;
-    })
+  return inquirer.prompt(question)
 }
 
 function addToDb() {
@@ -31,11 +28,7 @@ function addToDb() {
     message: 'What would you like to add?',
     choices: ['New employee','New role','New department','Go Back']
   }
-  return inquirer
-    .prompt(question)
-    .then(answer => {
-      return answer.add;
-    })
+  return inquirer.prompt(question)
 }
 
 function updateDb() {
@@ -45,20 +38,7 @@ function updateDb() {
     message: 'What would you like to update?',
     choices: ['Employee role', 'Employee manager', 'Go Back']
   }
-  return inquirer
-    .prompt(question)
-    .then(answer => {
-      return answer.update;
-    })
+  return inquirer.prompt(question)
 }
 
 module.exports = {whatNext, viewDb, addToDb, updateDb};
-
-// function deleteFromDb() {
-//   let question = {
-//     type: 'list',
-//     name: 'delete',
-//     message: 'What would you like to delete?',
-//     choices: ['Employee', 'Role']
-//   }
-// }
