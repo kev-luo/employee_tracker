@@ -1,9 +1,7 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const mysql = require('mysql');
-const initialQuestions = require('./inquirerQuestions/initialQuestions');
 const {Employee,Role,Department} = require('./inquirerQuestions/tableClasses');
-const create = require('./inquirerQuestions/create');
 const update = require('./inquirerQuestions/update');
 const addMySql = require('./sqlQueries/addMySql');
 const viewMySql = require('./sqlQueries/viewMySql');
@@ -25,15 +23,6 @@ const updateMySql = require('./sqlQueries/updateMySql');
 
 let crudQuestions = [
   {
-    View: {
-
-    },
-    Add: {
-      type: 'list',
-      name: 'crud',
-      message: 'What would you like to add?',
-      choices: ['New employee','New role','New department','Go Back']
-    },
     Update: {
       type: 'list',
       name: 'crud',
@@ -74,7 +63,7 @@ function main() {
   })
 }
 
-function viewOptions(op) {
+function viewOptions() {
   let question = {
     type: 'list',
     name: 'view',
@@ -112,31 +101,100 @@ function viewOptions(op) {
   })
 }
 
-async function addThis(manipulateDbParam) {
-  let newEntryInfo;
-  let newEntryObject;
-
-  switch (manipulateDbParam) {
-    case 'New employee':
-      newEntryInfo = await create.addEmployee(); // details needed to create new class instance
-      newEntryObject = new Employee(newEntryInfo.firstName, newEntryInfo.lastName, parseInt(newEntryInfo.roleId, parseInt(newEntryInfo.managerId))) // create new class instance
-      await addMySql.addEmpQuery(newEntryObject); // call fxn to add data to mySQL
-      console.log('New employee added');
-      break;
-    case 'New role':
-      newEntryInfo = await create.addRole(); // details needed to create new class instance
-      newEntryObject = new Role(newEntryInfo.title, parseInt(newEntryInfo.salary), parseInt(newEntryInfo.deptId)) // create new class instance
-      await addMySql.addRoleQuery(newEntryObject); // call fxn to add data to mySQL
-      console.log('New role added');
-      break;
-    case 'New department':
-      newEntryInfo = await create.addDept(); // details needed to create new class instance
-      newEntryObject = new Department(newEntryInfo.name) // create new class instance
-      await addMySql.addDeptQuery(newEntryObject); // call fxn to add data to mySQL
-      console.log('New department added');
-      break;
+function addOptions() {
+  let question = {
+    type: 'list',
+    name: 'add',
+    message: 'What would you like to add?',
+    choices: ['New employee','New role','New department','Go Back']
   }
-};
+
+  inquirer.prompt(question).then(async ({add}) => {
+    switch (add) {
+      case 'New employee':
+        return addEmployee();
+      case 'New role':
+        return addRole();
+      case 'New department':
+        return addDept();
+      case 'Go Back':
+        break;
+    }
+  })
+}
+
+function addEmployee() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'firstName',
+      message: "What is the employee's first name?"
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: "What is the employee's last name?"
+    },
+    {
+      type: 'input',
+      name: 'roleId',
+      message: "What is the employee's role ID?"
+    },
+    {
+      type: 'input',
+      name: 'managerId',
+      message: "(Optional) What is their manager's ID?"
+    },
+  ]
+  inquirer.prompt(question).then(async (emp) => {
+    let newEmp = new Employee(emp.firstName, emp.lastName, parseInt(emp.roleId), parseInt(emp.managerId));
+    let mySqlRes = await addMySql.addEmpQuery(newEmp);
+    console.log(mySqlRes);
+    return main();
+  })
+}
+
+function addRole() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'title',
+      message: "What is the title of the new role?"
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: "What is the salary of the new role?"
+    },
+    {
+      type: 'input',
+      name: 'deptId',
+      message: "What is the department ID of the new role?"
+    }
+  ]
+  inquirer.prompt(question).then(async (role) => {
+    let newRole = new Role(role.title, parseInt(role.salary), parseInt(role.deptId));
+    let mySqlRes = await addMySql.addRoleQuery(newRole);
+    console.log(mySqlRes);
+    return main();
+  })
+}
+
+function addDept() {
+  let question = {
+    type: 'input',
+    name: 'name',
+    message: "What is the name of the new department?"
+  }
+  inquirer.prompt(question).then(async (dept) => {
+    let newDept = new Department(dept.name);
+    let mySqlRes = await addMySql.addDeptQuery(newDept);
+    console.log(mySqlRes);
+    return main();
+  })
+}
 
 async function updateThis(manipulateDbParam) {
   await viewMySql.viewAllEmployees();

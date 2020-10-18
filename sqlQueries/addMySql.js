@@ -12,32 +12,38 @@ db.connect(err => {
 })
 
 function addEmpQuery(employee) {
-  const queryString = `INSERT INTO employee SET ?`;
-  
-  db.query(queryString,employee,(err,res) => {
-    if (err) throw err;
-    console.log(res);
-    db.end();
+  return new Promise((resolve, reject) => {
+    const queryString = `INSERT INTO employee SET ?`;
+    
+    db.query(queryString,employee,(err,res) => {
+      if (err) reject(err);
+      // db.end();
+      return resolve("Employee added");
+    })
   })
 }
 
 function addRoleQuery(role) {
-  const queryString = `INSERT INTO role SET ?`;
-  
-  db.query(queryString,role,(err,res) => {
-    if (err) throw err;
-    console.log(res);
-    db.end();
+  return new Promise((resolve, reject) => {
+    const queryString = `INSERT INTO role SET ?`;
+    
+    db.query(queryString,role,(err,res) => {
+      if (err) reject(err);
+      // db.end();
+      return resolve("Role added");
+    })
   })
 }
 
 function addDeptQuery(department) {
-  const queryString = `INSERT INTO department SET ?`;
-  
-  db.query(queryString,department,(err,res) => {
-    if (err) throw err;
-    console.log(res);
-    db.end();
+  return new Promise((resolve, reject) => {
+    const queryString = `INSERT INTO department SET ?`;
+    
+    db.query(queryString,department,(err,res) => {
+      if (err) reject(err);
+      // db.end();
+      return resolve("Department added");
+    })
   })
 }
 
