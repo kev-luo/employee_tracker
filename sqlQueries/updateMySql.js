@@ -11,30 +11,35 @@ db.connect(err => {
   if (err) throw err;
 })
 
-function updateEmpRole(empInfo) {
-  let queryString = `UPDATE employee SET ? WHERE ?`
-  let params = 
-  [
-    {role_id: `${parseInt(empInfo.role_id)}` }, 
-    {id:      `${parseInt(empInfo.id)}` }
-  ];
-  db.query(queryString, params, (err,res) => {
-    if (err) throw err;
-    console.log("employee role updated");
-  });
+function updateEmpRole(id,roleId) {
+  return new Promise((resolve, reject) => {
+    let queryString = `UPDATE employee SET ? WHERE ?`
+    let params = 
+    [
+      {role_id: `${parseInt(roleId)}`}, 
+      {id: `${parseInt(id)}`}
+    ];
+    db.query(queryString, params, (err,res) => {
+      if (err) reject(err);
+      return resolve("Employee role updated");
+    });
+  })
+
 }
 
-function updateEmpMgr(empInfo) {
-  let queryString = `UPDATE employee SET ? WHERE ?`
-  let params = 
-  [
-    {manager_id: `${parseInt(empInfo.manager_id)}` }, 
-    {id:      `${parseInt(empInfo.id)}` }
-  ];
-  db.query(queryString, params, (err,res) => {
-    if (err) throw err;
-    console.log("employee manager updated");
-  });
+function updateEmpMgr(id,mgrId) {
+  return new Promise((resolve, reject) => {
+    let queryString = `UPDATE employee SET ? WHERE ?`
+    let params = 
+    [
+      {manager_id: `${parseInt(mgrId)}`}, 
+      {id: `${parseInt(id)}`}
+    ];
+    db.query(queryString, params, (err,res) => {
+      if (err) reject(err);
+      return resolve("Employee manager updated");
+    });
+  })
 }
 
 module.exports = {updateEmpRole, updateEmpMgr};

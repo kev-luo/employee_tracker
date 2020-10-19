@@ -128,12 +128,12 @@ function addEmployee() {
   [
     {
       type: 'input',
-      name: 'firstName',
+      name: 'fName',
       message: "What is the employee's first name?"
     },
     {
       type: 'input',
-      name: 'lastName',
+      name: 'lName',
       message: "What is the employee's last name?"
     },
     {
@@ -143,12 +143,12 @@ function addEmployee() {
     },
     {
       type: 'input',
-      name: 'managerId',
+      name: 'mgrId',
       message: "(Optional) What is their manager's ID?"
     },
   ]
-  inquirer.prompt(question).then(async (emp) => {
-    let newEmp = new Employee(emp.firstName, emp.lastName, parseInt(emp.roleId), parseInt(emp.managerId));
+  inquirer.prompt(question).then(async ({fName,lName,roleId,mgrId}) => {
+    let newEmp = new Employee(fName, lName, parseInt(roleId), parseInt(mgrId));
     let mySqlRes = await addMySql.addEmpQuery(newEmp);
     console.log(mySqlRes);
     return main();
@@ -174,8 +174,8 @@ function addRole() {
       message: "What is the department ID of the new role?"
     }
   ]
-  inquirer.prompt(question).then(async (role) => {
-    let newRole = new Role(role.title, parseInt(role.salary), parseInt(role.deptId));
+  inquirer.prompt(question).then(async ({title,salary,deptId}) => {
+    let newRole = new Role(title, parseInt(salary), parseInt(deptId));
     let mySqlRes = await addMySql.addRoleQuery(newRole);
     console.log(mySqlRes);
     return main();
@@ -188,34 +188,78 @@ function addDept() {
     name: 'name',
     message: "What is the name of the new department?"
   }
-  inquirer.prompt(question).then(async (dept) => {
-    let newDept = new Department(dept.name);
+  inquirer.prompt(question).then(async ({name}) => {
+    let newDept = new Department(name);
     let mySqlRes = await addMySql.addDeptQuery(newDept);
     console.log(mySqlRes);
     return main();
   })
 }
 
-async function updateThis(manipulateDbParam) {
-  await viewMySql.viewAllEmployees();
-  
-  let empInfo;
+function updateOptions() {
+  let question = {
+    type: 'list',
+    name: 'update',
+    message: 'What would you like to update?',
+    choices: ['Employee role', 'Employee manager', 'Go Back']
+  }
+  inquirer.prompt(question).then(async ({update}) => {
+    queryData = await viewMySql.viewAllEmployees();
+    tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
+    console.table(tableHead,queryData);
 
-  setTimeout( async () => {
-    switch (manipulateDbParam) {
+    switch (update) {
       case 'Employee role':
-        empInfo = await update.empRoleQs();
-        await updateMySql.updateEmpRole(empInfo);
-        break;
+        return updateEmpRole();
       case 'Employee manager':
-        empInfo = await update.empMgrQs();
-        await updateMySql.updateEmpMgr(empInfo);
+        return updateEmpMgr();
+      case 'Go Back':
         break;
     }
-  },1000)
-  
-};
+  })
+}
 
+function updateEmpRole() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the id of the employee you'd like to update?"
+    },
+    {
+      type: 'input',
+      name: 'roleId',
+      message: "What would you like this employee's new role to be?"
+    }
+  ]
+  inquirer.prompt(question).then(async ({id,roleId}) => {
+    let mySqlRes = await updateMySql.updateEmpRole(id,roleId);
+    console.log(mySqlRes);
+    main();
+  })
+}
+
+function updateEmpMgr() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the id of the employee you'd like to update?"
+    },
+    {
+      type: 'input',
+      name: 'mgrId',
+      message: "Who is this employee's new manager?"
+    }
+  ]
+  inquirer.prompt(question).then(async ({id,mgrId}) => {
+    let mySqlRes = await updateMySql.updateEmpRole(id,mgrId);
+    console.log(mySqlRes);
+    main();
+  })
+}
 
 main();
 // call table classes with add/delete/read/update inquirer response
