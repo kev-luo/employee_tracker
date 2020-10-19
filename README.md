@@ -12,7 +12,7 @@ content management system (cms) allowing companies to keep track of their employ
 - ~~use inquirer to allow user to update employee roles~~
 - ~~allow updating employee managers~~
 - allow viewing employees by manager
-- allow deleting departments, roles, and employees
+- ~~allow deleting departments, roles, and employees~~
 - allow viewing of total utilized budget of a department (combined salaries of all employees in that department)
 - fix transitions between different types of queries
 - when asking about new employee, make theh role question a list of choices based on what's shown in the employee table
