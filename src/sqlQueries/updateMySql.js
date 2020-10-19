@@ -24,7 +24,6 @@ function updateEmpRole(id,roleId) {
       return resolve("Employee role updated");
     });
   })
-
 }
 
 function updateEmpMgr(id,mgrId) {

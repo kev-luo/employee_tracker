@@ -1,42 +1,10 @@
 const inquirer = require('inquirer');
 const cTable = require('console.table');
-const mysql = require('mysql');
-const {Employee,Role,Department} = require('./inquirerQuestions/tableClasses');
-const update = require('./inquirerQuestions/update');
-const addMySql = require('./sqlQueries/addMySql');
-const viewMySql = require('./sqlQueries/viewMySql');
-const updateMySql = require('./sqlQueries/updateMySql');
-
-// const db = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'kevin',
-//   password: 'mipassword',
-//   database: 'employee_trackerdb'
-// })
-
-// db.connect((err,res) => {
-//   if (err) throw err;
-//   console.log(res);
-// })
-
-
-
-let crudQuestions = [
-  {
-    Update: {
-      type: 'list',
-      name: 'crud',
-      message: 'What would you like to update?',
-      choices: ['Employee role', 'Employee manager', 'Go Back']
-    },
-    Remove: {
-      type: 'list',
-      name: 'crud',
-      message: 'What would you like to delete?',
-      choices: ['Employee', 'Role']
-    }
-  }
-]
+const {Employee,Role,Department} = require('./src/tableClasses');
+const addMySql = require('./src/sqlQueries/addMySql');
+const viewMySql = require('./src/sqlQueries/viewMySql');
+const updateMySql = require('./src/sqlQueries/updateMySql');
+const deleteMySql = require('./src/sqlQueries/deleteMySql');
 
 function main() {
   const question = {
@@ -55,14 +23,15 @@ function main() {
       case 'Update':
         return updateOptions();
       case 'Remove':
-        return removeOptions();
+        return deleteOptions();
       case 'Exit':
         console.log('bye');
         process.exit();
     }
   })
 }
-
+// select mySQL data queries ===================================================
+// questions to view by dept and by manager
 function viewOptions() {
   let question = {
     type: 'list',
@@ -93,14 +62,14 @@ function viewOptions() {
       case 'All employees by manager':
         break;
       case 'Go Back':
-        break;
+        return main();
     }
 
     console.table(tableHead,queryData);
     main();
   })
 }
-
+// insert into mySQL table queries =============================================
 function addOptions() {
   let question = {
     type: 'list',
@@ -118,7 +87,7 @@ function addOptions() {
       case 'New department':
         return addDept();
       case 'Go Back':
-        break;
+        return main();
     }
   })
 }
@@ -195,7 +164,7 @@ function addDept() {
     return main();
   })
 }
-
+// update mySQL table queries ==================================================
 function updateOptions() {
   let question = {
     type: 'list',
@@ -206,15 +175,16 @@ function updateOptions() {
   inquirer.prompt(question).then(async ({update}) => {
     queryData = await viewMySql.viewAllEmployees();
     tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
-    console.table(tableHead,queryData);
-
+    
     switch (update) {
       case 'Employee role':
+        console.table(tableHead,queryData);
         return updateEmpRole();
       case 'Employee manager':
+        console.table(tableHead,queryData);
         return updateEmpMgr();
       case 'Go Back':
-        break;
+        return main();
     }
   })
 }
@@ -236,7 +206,7 @@ function updateEmpRole() {
   inquirer.prompt(question).then(async ({id,roleId}) => {
     let mySqlRes = await updateMySql.updateEmpRole(id,roleId);
     console.log(mySqlRes);
-    main();
+    return main();
   })
 }
 
@@ -257,10 +227,100 @@ function updateEmpMgr() {
   inquirer.prompt(question).then(async ({id,mgrId}) => {
     let mySqlRes = await updateMySql.updateEmpRole(id,mgrId);
     console.log(mySqlRes);
-    main();
+    return main();
+  })
+}
+// delete mySQL data queries ====================================================
+// questions for specifics on deleting employee and role
+function deleteOptions() {
+  let question = {
+    type: 'list',
+    name: 'deleteT',
+    message: 'What would you like to delete?',
+    choices: ['Employee', 'Role', 'Department']
+  }
+  inquirer.prompt(question).then(async ({deleteT}) => {
+    switch (deleteT) {
+      case 'Employee':
+        queryData = await viewMySql.viewAllEmployees();
+        if (queryData.length === 0) {
+          console.log('There are no employees to delete');
+          return main();
+        }
+        tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
+        console.table(tableHead, queryData);
+        return delEmp();
+
+      case 'Role':
+        queryData = await viewMySql.viewAllRoles();
+        if (queryData.length === 0) {
+          console.log('There are no roles to delete');
+          return main();
+        }
+        tableHead = ['ID','Title','Salary','Department ID']
+        console.table(tableHead, queryData);
+        return delRole();
+
+      case 'Department':
+        queryData = await viewMySql.viewAllDepartments();
+        if (queryData.length === 0) {
+          console.log('There are no departments to delete');
+          return main();
+        }
+        tableHead = ['ID','Dept Name'];
+        console.table(tableHead, queryData);
+        return delDept();
+    }
+  })
+}
+
+function delEmp() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the id of the employee you'd like to delete?"
+    }
+  ]
+  inquirer.prompt(question).then(async ({id}) => {
+    let mySqlRes = await deleteMySql.deleteEmp(id);
+    console.log(mySqlRes);
+    return main();
+  })
+}
+
+function delRole() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the id of the role you'd like to delete?"
+    }
+  ]
+  inquirer.prompt(question).then(async ({id}) => {
+    let mySqlRes = await deleteMySql.deleteRole(id);
+    console.log(mySqlRes);
+    return main();
+  })
+}
+
+function delDept() {
+  let question = 
+  [
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the id of the department you'd like to delete?"
+    }
+  ]
+  inquirer.prompt(question).then(async ({id}) => {
+    let mySqlRes = await deleteMySql.deleteDept(id);
+    console.log(mySqlRes);
+    return main();
   })
 }
 
 main();
-// call table classes with add/delete/read/update inquirer response
-// make mysql query using newly created object
+

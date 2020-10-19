@@ -25,3 +25,5 @@ manager_id INT,         -- FK reference to another employee (manager of employee
 PRIMARY KEY(id)         -- employee table FK (manager_id) references this
   );
 
+INSERT INTO department (name)
+VALUES ('Sales'),('Engineering'),('Finance'),('Legal');
