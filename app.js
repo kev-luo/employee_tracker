@@ -13,7 +13,6 @@ function main() {
     message: 'What would you like to do?',
     choices: ['View','Add','Update','Remove','Exit']
   }
-
   inquirer.prompt(question).then( ({choice}) => {
     switch (choice) {
       case 'View':
@@ -25,7 +24,7 @@ function main() {
       case 'Remove':
         return deleteOptions();
       case 'Exit':
-        console.log('bye');
+        console.log('hasta luego');
         process.exit();
     }
   })
@@ -47,15 +46,15 @@ function viewOptions() {
     switch(view) {
       case 'All employees':
         queryData = await viewMySql.viewAllEmployees();
-        tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
+        tableHead = ['Emp ID','Employee','Title','Dept','Salary','Manager']
         break;
       case 'All roles':
         queryData = await viewMySql.viewAllRoles();
-        tableHead = ['ID','Title','Salary','Department ID']
+        tableHead = ['Role ID','Role','Dept','Salary']
         break;
       case 'All departments':
         queryData = await viewMySql.viewAllDepartments();
-        tableHead = ['ID','Dept Name']
+        tableHead = ['Dept ID','Dept','Utilized Budget']
         break;
       case 'All employees by department':
         break;
@@ -237,7 +236,7 @@ function deleteOptions() {
     type: 'list',
     name: 'deleteT',
     message: 'What would you like to delete?',
-    choices: ['Employee', 'Role', 'Department']
+    choices: ['Employee', 'Role', 'Department', 'Go Back']
   }
   inquirer.prompt(question).then(async ({deleteT}) => {
     switch (deleteT) {
@@ -270,6 +269,9 @@ function deleteOptions() {
         tableHead = ['ID','Dept Name'];
         console.table(tableHead, queryData);
         return delDept();
+      
+      case 'Go Back':
+        return main();
     }
   })
 }
