@@ -23,11 +23,17 @@ function addEmpQuery(employee) {
   })
 }
 
-function addRoleQuery(role) {
+function addRoleQuery(title,salary,dept) {
   return new Promise((resolve, reject) => {
-    const queryString = `INSERT INTO role SET ?`;
+    const queryString = `
+    INSERT INTO role(title,salary,department_id)
+    SELECT ?, ?, id
+    FROM department
+    WHERE name = ?`;
     
-    db.query(queryString,role,(err,res) => {
+    let queryParams = [title,salary,dept]
+    
+    db.query(queryString,queryParams,(err,res) => {
       if (err) reject(err);
       // db.end();
       return resolve("Role added");
@@ -47,4 +53,15 @@ function addDeptQuery(department) {
   })
 }
 
-module.exports = {addEmpQuery, addRoleQuery, addDeptQuery}
+function deptNames() {
+  return new Promise((resolve,reject) => {
+    db.query(`SELECT name FROM department`, (err,res) => {
+      if (err) reject(err);
+      let depts = res.map(name => {
+        return name.name;
+      })
+      resolve(depts);
+    })
+  })
+}
+module.exports = {addEmpQuery, addRoleQuery, addDeptQuery, deptNames}

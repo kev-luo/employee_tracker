@@ -127,7 +127,7 @@ function addEmployee() {
   })
 }
 
-function addRole() {
+async function addRole() {
   let question = 
   [
     {
@@ -141,14 +141,14 @@ function addRole() {
       message: "What is the salary of the new role?"
     },
     {
-      type: 'input',
-      name: 'deptId',
-      message: "What is the department ID of the new role?"
+      type: 'list',
+      name: 'dept',
+      message: "What department does this role belong to?",
+      choices: await addMySql.deptNames()
     }
   ]
-  inquirer.prompt(question).then(async ({title,salary,deptId}) => {
-    let newRole = new Role(title, parseInt(salary), parseInt(deptId));
-    let mySqlRes = await addMySql.addRoleQuery(newRole);
+  inquirer.prompt(question).then(async ({title,salary,dept}) => {
+    let mySqlRes = await addMySql.addRoleQuery(title, parseInt(salary), dept);
     console.log(mySqlRes);
     return main();
   })

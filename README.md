@@ -30,7 +30,7 @@ content management system (cms) allowing companies to keep track of their employ
 - query mySQL using variable containing table name as a string (eg INSERT INTO ? SET ?). first question mark is where i want to put the table name variable however it's not working since the variable contains a string. 
   -  error: "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''employee'' at line 1"
 -  cli-table doesn't end the inquirer if i don't explicitly call another inquirer function
-
+- insert new entry into role table with 'insert ... select' query
 
 ## Table of Contents
   - [Installation](#installation)
