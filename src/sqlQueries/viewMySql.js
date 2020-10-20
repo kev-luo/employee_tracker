@@ -92,11 +92,55 @@ function viewAllDepartments() {
 }
 
 function viewEmpByDept() {
+  return new Promise((resolve, reject) => {
+    let queryString = `
+    SELECT
+      department.name AS dept,
+      title,
+      CONCAT(first_name, ' ', last_name) AS name
+    FROM department
+    LEFT JOIN role
+      ON department.id = role.department_id
+    LEFT JOIN employee
+      ON role.id = employee.role_id
+    ORDER BY dept`;
 
+    db.query(queryString,(err,res) => {
+      if (err) reject(err);
+      let arrayData = res.map(emp => {
+        return [emp.dept, emp.title, emp.name]
+      });
+      // db.end();
+      return resolve(arrayData);
+    });
+  })
 }
 
 function viewEmpByMgr() {
+  return new Promise((resolve, reject) => {
+    let queryString = `
+    SELECT 
+      name,
+      IFNULL(CONCAT(m.first_name, ' ', m.last_name),'DeptLead') AS mgr,
+      CONCAT(e.first_name, ' ', e.last_name) AS emp
+    FROM employee e
+    LEFT JOIN employee m
+      ON m.id = e.manager_id
+    LEFT JOIN role
+      ON e.role_id = role.id
+    LEFT JOIN department
+      ON department.id = role.department_id
+    ORDER BY name`;
 
+    db.query(queryString,(err,res) => {
+      if (err) reject(err);
+      let arrayData = res.map(emp => {
+        return [emp.name, emp.mgr, emp.emp]
+      });
+      // db.end();
+      return resolve(arrayData);
+    });
+  })
 }
 
 module.exports = {viewAllEmployees, viewAllRoles, viewAllDepartments, viewEmpByDept, viewEmpByMgr}

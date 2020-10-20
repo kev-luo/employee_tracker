@@ -57,8 +57,12 @@ function viewOptions() {
         tableHead = ['Dept ID','Dept','Utilized Budget']
         break;
       case 'All employees by department':
+        queryData = await viewMySql.viewEmpByDept();
+        tableHead = ['Dept','Role','Employee']
         break;
       case 'All employees by manager':
+        queryData = await viewMySql.viewEmpByMgr();
+        tableHead = ['Dept','Manager','Employee']
         break;
       case 'Go Back':
         return main();

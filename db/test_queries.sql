@@ -77,3 +77,15 @@ GROUP BY name
 ORDER BY id
 
 -- view all employees by department
+SELECT
+  department.name AS dept,
+  title,
+  CONCAT(first_name, ' ', last_name) AS name
+FROM department
+LEFT JOIN role
+  ON department.id = role.department_id
+LEFT JOIN employee
+  ON role.id = employee.role_id
+ORDER BY dept
+
+-- view all employees by manager
