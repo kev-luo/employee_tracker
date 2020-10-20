@@ -95,7 +95,7 @@ function addOptions() {
   })
 }
 
-function addEmployee() {
+async function addEmployee() {
   let question = 
   [
     {
@@ -109,19 +109,23 @@ function addEmployee() {
       message: "What is the employee's last name?"
     },
     {
-      type: 'input',
-      name: 'roleId',
-      message: "What is the employee's role ID?"
+      type: 'list',
+      name: 'role',
+      message: "What is this employee's role?",
+      choices: await addMySql.roleNames()
     },
     {
-      type: 'input',
-      name: 'mgrId',
-      message: "(Optional) What is their manager's ID?"
+      type: 'list',
+      name: 'mgr',
+      message: "(Optional) Who is this employee's manager?",
+      choices: await addMySql.empNames()
     },
   ]
-  inquirer.prompt(question).then(async ({fName,lName,roleId,mgrId}) => {
-    let newEmp = new Employee(fName, lName, parseInt(roleId), parseInt(mgrId));
-    let mySqlRes = await addMySql.addEmpQuery(newEmp);
+  inquirer.prompt(question).then(async ({fName,lName,role,mgr}) => {
+    if(mgr === 'None') {
+      mgr = null;
+    }
+    let mySqlRes = await addMySql.addEmpQuery(fName,lName,role,mgr);
     console.log(mySqlRes);
     return main();
   })
@@ -161,8 +165,7 @@ function addDept() {
     message: "What is the name of the new department?"
   }
   inquirer.prompt(question).then(async ({name}) => {
-    let newDept = new Department(name);
-    let mySqlRes = await addMySql.addDeptQuery(newDept);
+    let mySqlRes = await addMySql.addDeptQuery(name);
     console.log(mySqlRes);
     return main();
   })

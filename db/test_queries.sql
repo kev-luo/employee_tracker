@@ -26,14 +26,16 @@ LEFT JOIN role
   ON department.id = role.department_id
 ORDER BY id
 
-----------------------------------------------------------------------------------view all departments
+--------------------------------------------------------------------view all departments
 SELECT
-	department.id AS id,
+  department.id AS id,
   name,
-  SUM(salary) AS budg
+  (SUM(salary)*COUNT(role_id)) AS budg
 FROM department
 LEFT JOIN role
   ON department.id = role.department_id
+LEFT JOIN employee
+  ON role.id = employee.role_id
 GROUP BY name
 ORDER BY id
 
