@@ -57,4 +57,19 @@ function updateEmpMgr(emp_name,mgr_name) {
   })
 }
 
-module.exports = {updateEmpRole, updateEmpMgr};
+function updateRoleDept(role,dept) {
+  return new Promise((resolve, reject) => {
+    let queryString = `
+      UPDATE role
+      SET department_id = (SELECT id FROM department WHERE name = ?)
+      WHERE title = ?`
+    let queryParams = [dept, role]
+
+    db.query(queryString, queryParams, (err,res) => {
+      if (err) reject(err);
+      return resolve("Role updated");
+    })
+  })
+}
+
+module.exports = {updateEmpRole, updateEmpMgr, updateRoleDept};

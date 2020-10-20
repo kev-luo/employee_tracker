@@ -23,6 +23,9 @@ content management system (cms) allowing companies to keep track of their employ
 - ~~seed.sql file to pre-populate database~~
 - adding validation to ensure user enters numbers when appropriate
 - ~~self referential tables?~~
+- fix utilized budget calculation in view all departments
+- fix role not showing up in view all roles when it is not assigned a department
+- 
 
 **issues run into**
 - connecting modules and having them all work together in one file

@@ -4,6 +4,20 @@ const addMySql = require('./src/addMySql');
 const viewMySql = require('./src/viewMySql');
 const updateMySql = require('./src/updateMySql');
 const deleteMySql = require('./src/deleteMySql');
+const mysql = require('mysql');
+
+const db = mysql.createConnection({
+  host:'localhost',
+  port:3306,
+  user:'kevin',
+  password:'mipassword',
+  database:'employee_trackerdb'
+})
+
+db.connect((err) => {
+  if (err) throw err;
+  main();
+})
 
 function main() {
   const question = {
@@ -23,13 +37,13 @@ function main() {
       case 'Remove':
         return deleteOptions();
       case 'Exit':
+        db.end();
         console.log('hasta luego');
         process.exit();
     }
   })
 }
 // select mySQL data queries ===================================================
-// questions to view by dept and by manager
 function viewOptions() {
   let question = {
     type: 'list',
@@ -119,15 +133,14 @@ async function addEmployee() {
       message: "(Optional) Who is this employee's manager?",
       choices: await viewMySql.empNamesMgr()
     },
-  ]
-  inquirer.prompt(question).then(async ({fName,lName,role,mgr}) => {
-    if(mgr === 'None') {
-      mgr = null;
-    }
-    let mySqlRes = await addMySql.addEmpQuery(fName,lName,role,mgr);
-    console.log(mySqlRes);
-    return main();
-  })
+  ];
+  let {fName,lName,role,mgr} = await inquirer.prompt(question);
+  if(mgr === 'None') {
+    mgr = null;
+  }
+  let mySqlRes = await addMySql.addEmpQuery(fName,lName,role,mgr);
+  console.log(mySqlRes);
+  return main();
 }
 
 async function addRole() {
@@ -149,12 +162,11 @@ async function addRole() {
       message: "What department does this role belong to?",
       choices: await viewMySql.deptNames()
     }
-  ]
-  inquirer.prompt(question).then(async ({title,salary,dept}) => {
-    let mySqlRes = await addMySql.addRoleQuery(title, parseInt(salary), dept);
-    console.log(mySqlRes);
-    return main();
-  })
+  ];
+  let {title,salary,dept} = await inquirer.prompt(question);
+  let mySqlRes = await addMySql.addRoleQuery(title, parseInt(salary), dept);
+  console.log(mySqlRes);
+  return main();
 }
 
 function addDept() {
@@ -175,14 +187,16 @@ function updateOptions() {
     type: 'list',
     name: 'update',
     message: 'What would you like to update?',
-    choices: ['Employee role', 'Employee manager', 'Go Back']
-  }
+    choices: ['Employee role', 'Employee manager', 'Role department', 'Go Back']
+  };
   inquirer.prompt(question).then(({update}) => {
     switch (update) {
       case 'Employee role':
         return updateEmpRole();
       case 'Employee manager':
         return updateEmpMgr();
+      case 'Role department':
+        return updateRoleDept();
       case 'Go Back':
         return main();
     }
@@ -204,8 +218,8 @@ async function updateEmpRole() {
       message: "What would you like their new role to be?",
       choices: await viewMySql.roleNames()
     }
-  ]
-  let {name,role} = await inquirer.prompt(question)
+  ];
+  let {name,role} = await inquirer.prompt(question);
   let mySqlRes = await updateMySql.updateEmpRole(name,role);
   console.log(mySqlRes);
   return main();
@@ -226,20 +240,35 @@ async function updateEmpMgr() {
       message: "Who would you like their new manager to be?",
       choices: await viewMySql.empNamesMgr()
     }
-  ]
-
+  ];
   let {emp_name,mgr_name} = await inquirer.prompt(question);
-  let mySqlRes = await updateMySql.updateEmpMgr(emp_name,mgr_name)
+  let mySqlRes = await updateMySql.updateEmpMgr(emp_name,mgr_name);
   console.log(mySqlRes);
   return main();
-  // inquirer.prompt(question).then(async ({emp_name,mgr_name}) => {
-  //   let mySqlRes = await updateMySql.updateEmpRole(id,mgrId);
-  //   console.log(mySqlRes);
-  //   return main();
-  // })
+}
+
+async function updateRoleDept() {
+  let question = 
+  [
+    {
+      type: 'list',
+      name: 'role',
+      message: "Which role would you like to update the department?",
+      choices: await viewMySql.roleNames()
+    },
+    {
+      type: 'list',
+      name: 'dept',
+      message: 'Which department would you like to add this role to?',
+      choices: await viewMySql.deptNames()
+    }
+  ];
+  let {role,dept} = await inquirer.prompt(question);
+  let mySqlRes = await updateMySql.updateRoleDept(role,dept);
+  console.log(mySqlRes);
+  return main();
 }
 // delete mySQL data queries ====================================================
-// questions for specifics on deleting employee and role
 function deleteOptions() {
   let question = {
     type: 'list',
@@ -250,33 +279,27 @@ function deleteOptions() {
   inquirer.prompt(question).then(async ({deleteT}) => {
     switch (deleteT) {
       case 'Employee':
-        queryData = await viewMySql.viewAllEmployees();
+        queryData = await viewMySql.empNames();
         if (queryData.length === 0) {
           console.log('There are no employees to delete');
           return main();
         }
-        tableHead = ['ID','First Name','Last Name','Role ID','Manager ID']
-        console.table(tableHead, queryData);
         return delEmp();
 
       case 'Role':
-        queryData = await viewMySql.viewAllRoles();
+        queryData = await viewMySql.roleNames();
         if (queryData.length === 0) {
           console.log('There are no roles to delete');
           return main();
         }
-        tableHead = ['ID','Title','Salary','Department ID']
-        console.table(tableHead, queryData);
         return delRole();
 
       case 'Department':
-        queryData = await viewMySql.viewAllDepartments();
+        queryData = await viewMySql.deptNames();
         if (queryData.length === 0) {
           console.log('There are no departments to delete');
           return main();
         }
-        tableHead = ['ID','Dept Name'];
-        console.table(tableHead, queryData);
         return delDept();
       
       case 'Go Back':
@@ -285,53 +308,49 @@ function deleteOptions() {
   })
 }
 
-function delEmp() {
+async function delEmp() {
+  let question = 
+    {
+      type: 'list',
+      name: 'name',
+      message: "Which employee would you like to remove?",
+      choices: await viewMySql.empNames()
+    };
+  let {name} = await inquirer.prompt(question);
+  let mySqlRes = await deleteMySql.deleteEmp(name);
+  console.log(mySqlRes);
+  return main();
+}
+
+async function delRole() {
+  let question = 
+    {
+      type: 'list',
+      name: 'role',
+      message: "Which role would you like to remove?",
+      choices: await viewMySql.roleNames()
+    };
+  let {role} = await inquirer.prompt(question);
+  let mySqlRes = await deleteMySql.deleteRole(role);
+    console.log(mySqlRes);
+    return main();
+}
+
+async function delDept() {
   let question = 
   [
     {
-      type: 'input',
-      name: 'id',
-      message: "What is the id of the employee you'd like to delete?"
+      type: 'list',
+      name: 'dept',
+      message: "Which dept would you like to remove?",
+      choices: await viewMySql.deptNames()
     }
   ]
-  inquirer.prompt(question).then(async ({id}) => {
-    let mySqlRes = await deleteMySql.deleteEmp(id);
-    console.log(mySqlRes);
-    return main();
-  })
+  let {dept} = await inquirer.prompt(question);
+  let mySqlRes = await deleteMySql.deleteDept(dept);
+  console.log(mySqlRes);
+  return main();
 }
 
-function delRole() {
-  let question = 
-  [
-    {
-      type: 'input',
-      name: 'id',
-      message: "What is the id of the role you'd like to delete?"
-    }
-  ]
-  inquirer.prompt(question).then(async ({id}) => {
-    let mySqlRes = await deleteMySql.deleteRole(id);
-    console.log(mySqlRes);
-    return main();
-  })
-}
-
-function delDept() {
-  let question = 
-  [
-    {
-      type: 'input',
-      name: 'id',
-      message: "What is the id of the department you'd like to delete?"
-    }
-  ]
-  inquirer.prompt(question).then(async ({id}) => {
-    let mySqlRes = await deleteMySql.deleteDept(id);
-    console.log(mySqlRes);
-    return main();
-  })
-}
-
-main();
+// main();
 
