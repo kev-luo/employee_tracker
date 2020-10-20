@@ -19,6 +19,15 @@ db.connect((err) => {
   main();
 })
 
+// inquirer not blank validation =======================================================
+const cannotBeBlank = input => {
+  return (input.length !== 0) ? true : 'This field must be filled.'
+}
+
+const onlyNumbers = input => {
+  return (/^\d+$/.test(input)) ? true : 'This field can only include numbers.'
+}
+// begin app ===========================================================================
 function main() {
   const question = {
     type: 'list',
@@ -43,7 +52,7 @@ function main() {
     }
   })
 }
-// select mySQL data queries ===================================================
+// select mySQL data queries ===========================================================
 function viewOptions() {
   let question = {
     type: 'list',
@@ -85,7 +94,7 @@ function viewOptions() {
     main();
   })
 }
-// insert into mySQL table queries =============================================
+// insert into mySQL table queries =====================================================
 function addOptions() {
   let question = {
     type: 'list',
@@ -114,12 +123,14 @@ async function addEmployee() {
     {
       type: 'input',
       name: 'fName',
-      message: "What is the employee's first name?"
+      message: "What is the employee's first name?",
+      validate: cannotBeBlank
     },
     {
       type: 'input',
       name: 'lName',
-      message: "What is the employee's last name?"
+      message: "What is the employee's last name?",
+      validate: cannotBeBlank
     },
     {
       type: 'list',
@@ -149,12 +160,14 @@ async function addRole() {
     {
       type: 'input',
       name: 'title',
-      message: "What is the title of the new role?"
+      message: "What is the title of the new role?",
+      validate: cannotBeBlank
     },
     {
       type: 'input',
       name: 'salary',
-      message: "What is the salary of the new role?"
+      message: "What is the salary of the new role?",
+      validate: onlyNumbers
     },
     {
       type: 'list',
@@ -173,7 +186,8 @@ function addDept() {
   let question = {
     type: 'input',
     name: 'name',
-    message: "What is the name of the new department?"
+    message: "What is the name of the new department?",
+    validate: cannotBeBlank
   }
   inquirer.prompt(question).then(async ({name}) => {
     let mySqlRes = await addMySql.addDeptQuery(name);
@@ -181,7 +195,7 @@ function addDept() {
     return main();
   })
 }
-// update mySQL table queries ==================================================
+// update mySQL table queries ==========================================================
 function updateOptions() {
   let question = {
     type: 'list',
@@ -268,7 +282,7 @@ async function updateRoleDept() {
   console.log(mySqlRes);
   return main();
 }
-// delete mySQL data queries ====================================================
+// delete mySQL data queries ============================================================
 function deleteOptions() {
   let question = {
     type: 'list',
@@ -351,6 +365,3 @@ async function delDept() {
   console.log(mySqlRes);
   return main();
 }
-
-// main();
-

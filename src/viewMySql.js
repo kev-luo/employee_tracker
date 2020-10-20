@@ -50,8 +50,8 @@ function viewAllRoles() {
       title AS role,
       name AS dept,
       salary
-    FROM department
-    LEFT JOIN role
+    FROM role
+    LEFT JOIN department
       ON department.id = role.department_id
     ORDER BY id`;
 
@@ -73,14 +73,13 @@ function viewAllDepartments() {
     SELECT
       department.id AS id,
       name,
-      (SUM(salary)*COUNT(role_id)) AS budg
-    FROM department
+      SUM(salary) as budg
+    FROM employee
     LEFT JOIN role
-      ON department.id = role.department_id
-    LEFT JOIN employee
-      ON role.id = employee.role_id
-    GROUP BY name
-    ORDER BY id`;
+    ON employee.role_id = role.id
+    LEFT JOIN department
+    ON department.id = role.department_id
+    GROUP BY name`;
 
     db.query(queryString,(err,res) => {
       if (err) reject(err);
@@ -100,11 +99,11 @@ function viewEmpByDept() {
       department.name AS dept,
       title,
       CONCAT(first_name, ' ', last_name) AS name
-    FROM department
+    FROM employee
     LEFT JOIN role
-      ON department.id = role.department_id
-    LEFT JOIN employee
-      ON role.id = employee.role_id
+      ON employee.role_id = role.id
+    LEFT JOIN department
+      ON role.department_id = department.id
     ORDER BY dept`;
 
     db.query(queryString,(err,res) => {
