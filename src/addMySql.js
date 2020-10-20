@@ -56,44 +56,4 @@ function addDeptQuery(department) {
   })
 }
 
-function deptNames() {
-  return new Promise((resolve,reject) => {
-    db.query(`SELECT name FROM department`, (err,res) => {
-      if (err) reject(err);
-      let depts = res.map(name => {
-        return name.name;
-      })
-      resolve(depts);
-    })
-  })
-}
-
-function roleNames() {
-  return new Promise((resolve,reject) => {
-    db.query(`SELECT title FROM role`, (err,res) => {
-      if (err) reject(err);
-      let roles = res.map(role => {
-        return role.title;
-      })
-      resolve(roles);
-    })
-  })
-}
-
-function empNames() {
-  return new Promise((resolve,reject) => {
-    const queryString = `
-    SELECT CONCAT(first_name, ' ', last_name) AS name
-    FROM employee
-    `
-    db.query(queryString, (err,res) => {
-      if (err) reject(err);
-      let emps = res.map(name => {
-        return name.name;
-      })
-      emps.push('None');
-      resolve(emps);
-    })
-  })
-}
-module.exports = {addEmpQuery, addRoleQuery, addDeptQuery, deptNames, roleNames, empNames}
+module.exports = {addEmpQuery, addRoleQuery, addDeptQuery}

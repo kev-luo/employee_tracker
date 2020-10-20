@@ -35,23 +35,11 @@ CREATE TABLE employee(    -- self-referential
     REFERENCES employee(id)
     );
 
--- add department
-department name
-
--- add role
-role name
-salary
-what department does the role belong to (list)
-
--- add employee
-employee f name
-employee l name
-employee role (list)
-employee manager (list)
-
 -- remove employee
 employee name (list)
 
 -- update employee manager
 employee whose manager you want to update (list)
 which employee do you want to set as manager for selected employee (list)
+
+-- update employee role

@@ -9,20 +9,20 @@ content management system (cms) allowing companies to keep track of their employ
 - ~~create databases and tables~~
 - ~~use inquirer to allow user to add departments, roles, and employees~~
 - ~~use inquirer to allow user to view departments, roles, and employees~~
-- ~~use inquirer to allow user to update employee roles~~
-- ~~allow updating employee managers~~
-- allow viewing employees by manager
-- ~~allow deleting departments, roles, and employees~~
-- allow viewing of total utilized budget of a department (combined salaries of all employees in that department)
-- fix transitions between different types of queries
-- when asking about new employee, make theh role question a list of choices based on what's shown in the employee table
+- ~~allow viewing employees by manager~~
+- ~~allow viewing of total utilized budget of a department (combined salaries of all employees in that department)~~
+- ~~fix transitions between different types of queries~~
+- ~~when asking about new employee, make theh role question a list of choices based on what's shown in the employee table~~
+- allow updating employee managers
+- allow deleting departments, roles, and employees
+- use inquirer to allow user to update employee roles
 
 **look into:**
-- separate files for containing functions for performing specific sql queries i plan to use
+- ~~separate files for containing functions for performing specific sql queries i plan to use~~
 - constructor function/class for organizing sql queries
-- seed.sql file to pre-populate database
+- ~~seed.sql file to pre-populate database~~
 - adding validation to ensure user enters numbers when appropriate
-- self referential tables?
+- ~~self referential tables?~~
 
 **issues run into**
 - connecting modules and having them all work together in one file
@@ -31,6 +31,7 @@ content management system (cms) allowing companies to keep track of their employ
   -  error: "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''employee'' at line 1"
 -  cli-table doesn't end the inquirer if i don't explicitly call another inquirer function
 - insert new entry into role table with 'insert ... select' query
+- update manager id in employees table while referencing employees table 
 
 ## Table of Contents
   - [Installation](#installation)

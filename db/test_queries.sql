@@ -65,16 +65,3 @@ LEFT JOIN department
   ON department.id = role.department_id
 ORDER BY name
 
-----------------------------------------------------------------------------add department
-department name
-
----------------------------------------------------------------------------------add role
-role name
-salary
-what department does the role belong to (list)
-
-------------------------------------------------------------------------------add employee
-employee f name
-employee l name
-employee role (list)
-employee manager (list)
