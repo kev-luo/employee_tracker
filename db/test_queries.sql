@@ -13,7 +13,7 @@ LEFT JOIN role
 	ON role.id = e.role_id
 LEFT JOIN department
 	ON role.department_id = department.id
-ORDER BY e.id
+ORDER BY dept
 
 ----------------------------------------------------------------------------view all roles
 SELECT 
@@ -26,11 +26,12 @@ LEFT JOIN department
   ON department.id = role.department_id
 ORDER BY id
 
---------------------------------------------------------------------view all departments
+------------------------------------------------------------view all departments budgets
 SELECT
   department.id AS id,
   name,
-  SUM(salary) as budg
+  COUNT(employee.id) AS emp_count,
+  SUM(salary) AS budg
 FROM employee
 LEFT JOIN role
 ON employee.role_id = role.id
@@ -53,7 +54,7 @@ ORDER BY dept
 ------------------------------------------------------------view all employees by manager
 SELECT 
   name,
-  IFNULL(CONCAT(m.first_name, ' ', m.last_name),'DeptLead') AS mgr,
+  IFNULL(CONCAT(m.first_name, ' ', m.last_name),'Dept Head') AS mgr,
   CONCAT(e.first_name, ' ', e.last_name) AS emp
 FROM employee e
 LEFT JOIN employee m

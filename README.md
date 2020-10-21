@@ -1,65 +1,31 @@
-# employee_tracker
+# Employee Tracker
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub top language](https://img.shields.io/github/languages/top/kev-luo/employee_tracker)
 
 ## Description
-content management system (cms) allowing companies to keep track of their employees
-
-**pseudocoding:**
-- ~~create databases and tables~~
-- ~~use inquirer to allow user to add departments, roles, and employees~~
-- ~~use inquirer to allow user to view departments, roles, and employees~~
-- ~~allow viewing employees by manager~~
-- ~~allow viewing of total utilized budget of a department (combined salaries of all employees in that department)~~
-- ~~fix transitions between different types of queries~~
-- ~~when asking about new employee, make theh role question a list of choices based on what's shown in the employee table~~
-- allow updating employee managers
-- allow deleting departments, roles, and employees
-- use inquirer to allow user to update employee roles
-
-**look into:**
-- ~~separate files for containing functions for performing specific sql queries i plan to use~~
-- constructor function/class for organizing sql queries
-- ~~seed.sql file to pre-populate database~~
-- adding validation to ensure user enters numbers when appropriate
-- ~~self referential tables?~~
-- fix utilized budget calculation in view all departments
-- fix role not showing up in view all roles when it is not assigned a department
-- 
-
-**issues run into**
-- connecting modules and having them all work together in one file
-- async/await with inquirer 
-- query mySQL using variable containing table name as a string (eg INSERT INTO ? SET ?). first question mark is where i want to put the table name variable however it's not working since the variable contains a string. 
-  -  error: "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''employee'' at line 1"
--  cli-table doesn't end the inquirer if i don't explicitly call another inquirer function
-- insert new entry into role table with 'insert ... select' query
-- update manager id in employees table while referencing employees table 
+This is a rudimentary content management system (cms) that allows companies to keep track of their their company structure. MySQL was used to store the data on a local server, which the user can retrieve/manipulate through Inquirer. The biggest challenge in getting this app to work was figuring out MySQL's syntax and orders of operation. Specifically, in trying to update manager ID's in the employee's table while also referencing employee's table in the same string led down a rabbit hole of subqueries, derived tables, and foreign key constraints. Working out the precedence of MySQL was critical to figuring out how to create more complex queries. Besides MySQL, the only other area that took some extra time was working around the asynchronous behavior of the queries combined with storing them in separate modules from the inquirer questions. I used promises in the query functions themselves, and then async/await in the inquirer functions to get the app working smoothly.
 
 ## Table of Contents
   - [Installation](#installation)
   - [Usage](#usage)
   - [License](#license)
-  - [Contributing](#contributing)
-  - [Tests](#tests)
   - [Questions](#questions)
 
 ## Installation
     npm install
 
 ## Usage
-CLI
+
+Run the app using the command below and you will be presented with some questions to help you get started with you employee management system. You can exit the application at any time by pressing Ctrl + C.
+
+    node app.js
+
+![demo](assets/demo.gif)
 
 ## License
 Licensed under the [MIT](https://opensource.org/licenses/MIT) License.
 
-## Contributing
-clone and then commit to your own branch
-
-## Tests
-    npm run test
-
 
 ## Questions
-![github profile pic](https://github.com/kev-luo.png?size=100)
+
 * [kvn.luo@gmail.com](kvn.luo@gmail.com)

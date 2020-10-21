@@ -58,7 +58,7 @@ function viewOptions() {
     type: 'list',
     name: 'view',
     message: 'What would you like to view?',
-    choices: ['All employees','All roles','All departments','All employees by department', 'All employees by manager','Go Back']
+    choices: ['All employees','All roles','All departments','All employees by department', 'All employees by manager', "Active dept's total budget", 'Go Back']
   }
 
   inquirer.prompt(question).then(async ({view}) => {
@@ -75,8 +75,8 @@ function viewOptions() {
         tableHead = ['Role ID','Role','Dept','Salary']
         break;
       case 'All departments':
-        queryData = await viewMySql.viewAllDepartments();
-        tableHead = ['Dept ID','Dept','Utilized Budget']
+        queryData = await viewMySql.viewAllDepts();
+        tableHead = ['ID','Dept']
         break;
       case 'All employees by department':
         queryData = await viewMySql.viewEmpByDept();
@@ -85,6 +85,10 @@ function viewOptions() {
       case 'All employees by manager':
         queryData = await viewMySql.viewEmpByMgr();
         tableHead = ['Dept','Manager','Employee']
+        break;
+      case "Active dept's total budget":
+        queryData = await viewMySql.viewDeptBudg();
+        tableHead = ['Dept ID','Dept','Emp Count','Utilized Budget']
         break;
       case 'Go Back':
         return main();

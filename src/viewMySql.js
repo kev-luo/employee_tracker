@@ -28,7 +28,7 @@ function viewAllEmployees() {
       ON role.id = e.role_id
     LEFT JOIN department
       ON role.department_id = department.id
-    ORDER BY e.id`;
+    ORDER BY dept`;
 
     db.query(queryString, (err,res) => {
       if (err) reject(err);
@@ -36,7 +36,6 @@ function viewAllEmployees() {
         return [emp.empId, emp.emp, emp.title, emp.dept, emp.salary, emp.mgr]
       });
 
-      // db.end();
       return resolve(arrayData);
     });
   })
@@ -61,34 +60,20 @@ function viewAllRoles() {
         return [role.id, role.role, role.dept, role.salary]
       });
 
-      // db.end();
       return resolve(arrayData);
     });
   })
 }
 
-function viewAllDepartments() {
-  return new Promise((resolve, reject) => {
-    let queryString = `
-    SELECT
-      department.id AS id,
-      name,
-      SUM(salary) as budg
-    FROM employee
-    LEFT JOIN role
-    ON employee.role_id = role.id
-    LEFT JOIN department
-    ON department.id = role.department_id
-    GROUP BY name`;
-
-    db.query(queryString,(err,res) => {
-      if (err) reject(err);
+function viewAllDepts() {
+  return new Promise((resolve,reject) => {
+    db.query(`SELECT * FROM department`, (err,res) => {
+      if (err) reject (err);
       let arrayData = res.map(dept => {
-        return [dept.id, dept.name, dept.budg]
-      });
-      // db.end();
+        return [dept.id, dept.name]
+      })
       return resolve(arrayData);
-    });
+    })
   })
 }
 
@@ -111,7 +96,7 @@ function viewEmpByDept() {
       let arrayData = res.map(emp => {
         return [emp.dept, emp.title, emp.name]
       });
-      // db.end();
+
       return resolve(arrayData);
     });
   })
@@ -122,7 +107,7 @@ function viewEmpByMgr() {
     let queryString = `
     SELECT 
       name,
-      IFNULL(CONCAT(m.first_name, ' ', m.last_name),'DeptLead') AS mgr,
+      IFNULL(CONCAT(m.first_name, ' ', m.last_name),'Dept Head') AS mgr,
       CONCAT(e.first_name, ' ', e.last_name) AS emp
     FROM employee e
     LEFT JOIN employee m
@@ -138,7 +123,33 @@ function viewEmpByMgr() {
       let arrayData = res.map(emp => {
         return [emp.name, emp.mgr, emp.emp]
       });
-      // db.end();
+
+      return resolve(arrayData);
+    });
+  })
+}
+
+function viewDeptBudg() {
+  return new Promise((resolve, reject) => {
+    let queryString = `
+    SELECT
+      department.id AS id,
+      name,
+      COUNT(employee.id) AS emp_count,
+      SUM(salary) as budg
+    FROM employee
+    LEFT JOIN role
+    ON employee.role_id = role.id
+    LEFT JOIN department
+    ON department.id = role.department_id
+    GROUP BY name`;
+
+    db.query(queryString,(err,res) => {
+      if (err) reject(err);
+      let arrayData = res.map(dept => {
+        return [dept.id, dept.name, dept.emp_count, dept.budg]
+      });
+      
       return resolve(arrayData);
     });
   })
@@ -201,4 +212,4 @@ function empNamesMgr() {
   })
 }
 
-module.exports = {viewAllEmployees, viewAllRoles, viewAllDepartments, viewEmpByDept, viewEmpByMgr, deptNames, roleNames, empNames, empNamesMgr}
+module.exports = {viewAllEmployees, viewAllRoles, viewAllDepts, viewEmpByDept, viewEmpByMgr, viewDeptBudg, deptNames, roleNames, empNames, empNamesMgr}

@@ -21,7 +21,7 @@ function addEmpQuery(fName,lName,role,mgr) {
 
     db.query(queryString,queryParams,(err,res) => {
       if (err) reject(err);
-      // db.end();
+
       return resolve("Employee added");
     })
   })
@@ -38,7 +38,7 @@ function addRoleQuery(title,salary,dept) {
     
     db.query(queryString,queryParams,(err,res) => {
       if (err) reject(err);
-      // db.end();
+
       return resolve("Role added");
     })
   })
@@ -50,7 +50,7 @@ function addDeptQuery(department) {
     
     db.query(queryString,{name:department},(err,res) => {
       if (err) reject(err);
-      // db.end();
+
       return resolve("Department added");
     })
   })
